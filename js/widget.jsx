@@ -1,34 +1,38 @@
 import { createRender, useModelState } from "@anywidget/react";
-
-import React, { useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import React, { useRef, useState, Suspense } from "react";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 function Box(props) {
-  // This reference gives us direct access to the THREE.Mesh object
   const ref = useRef();
-  // Hold state for hovered and clicked events
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
-  // Subscribe this component to the render-loop, rotate the mesh every frame
+
+  const torusModelUrl = "./torus_model.glb";
+  const gltf = useLoader(GLTFLoader, torusModelUrl);
+
+  // This will scale the torus when clicked
+  const scaleValue = clicked ? 1.5 : 1;
+
+  // For rotation, you can apply a similar `useFrame` logic if desired
   useFrame((state, delta) => (ref.current.rotation.x += delta));
-  // Return the view, these are regular Threejs elements expressed in JSX
+
   return (
-    <mesh
-      {...props}
+    <primitive
+      object={gltf.scene}
       ref={ref}
-      scale={clicked ? 1.5 : 1}
+      scale={[scaleValue, scaleValue, scaleValue]}
+      {...props}
       onClick={(event) => click(!clicked)}
       onPointerOver={(event) => hover(true)}
       onPointerOut={(event) => hover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? "hotpink" : "orange"} />
-    </mesh>
+    />
   );
 }
 
 export const render = createRender(() => {
   const [value, setValue] = useModelState("value");
+
   return (
     <>
       <button
@@ -40,8 +44,9 @@ export const render = createRender(() => {
       <Canvas>
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
-        <Box position={[-1.2, 0, 0]} />
-        <Box position={[1.2, 0, 0]} />
+        <Suspense fallback={null}>
+          <Box position={[-3, -2, 0]} />
+        </Suspense>
       </Canvas>
     </>
   );
