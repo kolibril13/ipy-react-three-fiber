@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ipy_react_three_fiber"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = ["anywidget"]
 
 [project.optional-dependencies]
