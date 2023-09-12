@@ -11,7 +11,7 @@ function Box(props) {
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
 
-  const torusModelUrl = "./torus_model.glb";
+  const torusModelUrl = "./cube_model.gltf";
   const gltf = useLoader(GLTFLoader, torusModelUrl);
 
   const scaleValue = clicked ? 1.5 : 1;
