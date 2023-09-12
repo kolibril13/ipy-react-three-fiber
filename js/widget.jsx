@@ -6,7 +6,7 @@ import { OrbitControls } from "@react-three/drei";
 
 extend({ OrbitControls });
 
-function Box(props) {
+function BlenderModel(props) {
   const ref = useRef();
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
@@ -46,7 +46,7 @@ export const render = createRender(() => {
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
         <Suspense fallback={null}>
-          <Box position={[-3, -2, 0]} />
+          <BlenderModel position={[-3, -2, 0]} />
         </Suspense>
         <OrbitControls />
       </Canvas>
