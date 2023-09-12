@@ -1,7 +1,10 @@
 import { createRender, useModelState } from "@anywidget/react";
 import React, { useRef, useState, Suspense } from "react";
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, extend } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { OrbitControls } from "@react-three/drei";
+
+extend({ OrbitControls });
 
 function Box(props) {
   const ref = useRef();
@@ -11,10 +14,8 @@ function Box(props) {
   const torusModelUrl = "./torus_model.glb";
   const gltf = useLoader(GLTFLoader, torusModelUrl);
 
-  // This will scale the torus when clicked
   const scaleValue = clicked ? 1.5 : 1;
 
-  // For rotation, you can apply a similar `useFrame` logic if desired
   useFrame((state, delta) => (ref.current.rotation.x += delta));
 
   return (
@@ -47,6 +48,7 @@ export const render = createRender(() => {
         <Suspense fallback={null}>
           <Box position={[-3, -2, 0]} />
         </Suspense>
+        <OrbitControls />
       </Canvas>
     </>
   );
