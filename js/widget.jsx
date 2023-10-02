@@ -1,55 +1,40 @@
 import { createRender, useModelState } from "@anywidget/react";
-import React, { useRef, useState, Suspense } from "react";
-import { Canvas, useFrame, useLoader, extend } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "@react-three/drei";
 
-extend({ OrbitControls });
 
-function BlenderModel(props) {
-  const ref = useRef();
-  const [hovered, hover] = useState(false);
-  const [clicked, click] = useState(false);
+import React, { useRef, useState } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
 
-  const torusModelUrl = "./cube_model.gltf";
-  const gltf = useLoader(GLTFLoader, torusModelUrl);
 
-  const scaleValue = clicked ? 1.5 : 1;
-
-  useFrame((state, delta) => (ref.current.rotation.x += delta));
-
+function Box(props) {
+  // This reference gives us direct access to the THREE.Mesh object
+  const ref = useRef()
+  // Hold state for hovered and clicked events
+  const [hovered, hover] = useState(false)
+  const [clicked, click] = useState(false)
+  // Subscribe this component to the render-loop, rotate the mesh every frame
+  useFrame((state, delta) => (ref.current.rotation.x += delta))
+  // Return the view, these are regular Threejs elements expressed in JSX
   return (
-    <primitive
-      object={gltf.scene}
-      ref={ref}
-      scale={[scaleValue, scaleValue, scaleValue]}
+    <mesh
       {...props}
+      ref={ref}
+      scale={clicked ? 1.5 : 1}
       onClick={(event) => click(!clicked)}
       onPointerOver={(event) => hover(true)}
-      onPointerOut={(event) => hover(false)}
-    />
-  );
+      onPointerOut={(event) => hover(false)}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+    </mesh>
+  )
 }
-
 export const render = createRender(() => {
-  const [value, setValue] = useModelState("value");
-
   return (
-    <>
-      <button
-        className="ipy_react_three_fiber-counter-button"
-        onClick={() => setValue(value + 1)}
-      >
-        count is {value}
-      </button>
-      <Canvas>
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
-        <Suspense fallback={null}>
-          <BlenderModel position={[-3, -2, 0]} />
-        </Suspense>
-        <OrbitControls />
-      </Canvas>
-    </>
+    <Canvas>
+      <Box color="#18a36e" position={[-1, 0, 3]} />
+      <Box color="#f56f42" position={[1, 0, 3]} />
+      <OrbitControls />
+      <directionalLight color="#ffffff" intensity={1} position={[-1, 2, 4]} />
+    </Canvas>
   );
 });
