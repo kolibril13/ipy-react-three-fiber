@@ -31,7 +31,7 @@ function Box(props) {
 export const render = createRender(() => {
   return (
     <Canvas>
-      <Box color="#18a36e" position={[-1, 0, 3]} />
+      <Box color="#18a36e" position={[-1, 0, 5]} />
       <Box color="#f56f42" position={[1, 0, 3]} />
       <OrbitControls />
       <directionalLight color="#ffffff" intensity={1} position={[-1, 2, 4]} />
